@@ -1,0 +1,161 @@
+
+enum State {
+    MAINSCREEN,
+    COFFEESCREEN,
+    FILLING,
+    TAKING
+}
+
+public class CoffeeMachine {
+    static Scanner sc = new Scanner(System.in);
+    static boolean isWorking = true;
+    static State state = State.MAINSCREEN;
+    static int water = 400;
+    static int milk = 540;
+    static int beans = 120;
+    static int cups = 9;
+    static int money = 550;
+
+    public static void main(String[] args) {
+        System.out.println("Write action (buy, fill, take, remaining, exit): ");
+        while (isWorking) {
+            input(sc.next());
+        }
+        return;
+    }
+
+    static void input(String choice) {
+        switch (state) {
+            case MAINSCREEN:
+                getMenu(choice);
+                break;
+            case COFFEESCREEN:
+                getBuyMode();
+                break;
+            case FILLING:
+                getFillMode();
+                break;
+            case TAKING:
+                getIngredients();
+                break;
+            default:
+                break;
+        }
+    }
+
+    static void getMenu(String choice) {
+        switch (choice) {
+            case "buy":
+                getBuyMode();
+                break;
+            case "fill":
+                getFillMode();
+                break;
+            case "take":
+                getTakeMode();
+                break;
+            case "remaining":
+                getIngredients();
+                break;
+            case "exit":
+                isWorking = false;
+                break;
+            default:
+                break;
+        }
+    }
+    static void getBuyMode() {
+       System.out.println("What do you want to buy? 1 - espresso, 2 - latte, " +
+               "3 - cappuccino, back - to main menu:");
+       String choice = sc.next();
+
+       switch (choice) {
+           case "1":
+               checkIngredients(250, 0, 16, 1, 4);
+                break;
+           case "2":
+               checkIngredients(350, 75, 20, 1, 7);
+               break;
+           case "3":
+               checkIngredients(200, 100, 12, 1, 6);
+               break;
+           case "back":
+               state = State.MAINSCREEN;
+               System.out.println("Write action (buy, fill, take, remaining, exit): ");
+               break;
+           default:
+               break;
+       }
+
+    }
+
+
+    static void getIngredients() {
+
+       System.out.println("The coffee machine has:");
+       System.out.println(water + " of water");
+       System.out.println(milk + " of milk");
+       System.out.println(beans + " of coffee beans");
+       System.out.println(cups + " of disposable cups");
+       System.out.println(money + " of money");
+       state = State.MAINSCREEN;
+       System.out.println("Write action (buy, fill, take, remaining, exit): ");
+
+   }
+
+
+    static void getFillMode() {
+       System.out.println("Write how many ml of water do you want to add:");
+       int fillWater = sc.nextInt();
+       water +=fillWater;
+       System.out.println("Write how many ml of milk do you want to add:");
+       int fillMilk = sc.nextInt();
+       milk +=fillMilk;
+       System.out.println("Write how many grams of coffee beans do you want to add:");
+       int fillBeans = sc.nextInt();
+       beans += fillBeans;
+       System.out.println("Write how many disposable cups of coffee do you want to add:");
+       int fillCups = sc.nextInt();
+       cups += fillCups;
+       state = State.MAINSCREEN;
+       System.out.println("Write action (buy, fill, take, remaining, exit): ");
+
+   }
+
+    static void getTakeMode() {
+       System.out.println("I gave you " + money);
+       money = 0;
+       state = State.MAINSCREEN;
+   }
+
+    static void checkIngredients(int chWater, int chMilk, int chBeans, int chCups, int mon) {
+        boolean nWater = chWater <= water;
+        boolean nMilk = chMilk <= milk;
+        boolean nBeans = chBeans <= beans;
+        boolean nCups = chCups <= cups;
+
+        if (nWater && nMilk && nBeans && nCups) {
+            System.out.println("I have enough resources, making you a coffee!");
+            water -= chWater;
+            milk -= chMilk;
+            beans -= chBeans;
+            cups -= chCups;
+            money += mon;
+            state = State.MAINSCREEN;
+        } else if (!nWater) {
+            System.out.println("Sorry, not enough water!");
+            state = State.MAINSCREEN;
+        } else if (!nMilk) {
+            System.out.println("Sorry, not enough milk!");
+            state = State.MAINSCREEN;
+        } else if (!nBeans) {
+            System.out.println("Sorry, not enough coffee beans!");
+            state = State.MAINSCREEN;
+        } else if (!nCups) {
+            System.out.println("Sorry, not enough cups!");
+            state = State.MAINSCREEN;
+        }
+        System.out.println("Write action (buy, fill, take, remaining, exit): ");
+   }
+
+}
